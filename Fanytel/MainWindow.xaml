@@ -1,0 +1,167 @@
+﻿<Window x:Class="Fanytel.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Fanytel"
+        mc:Ignorable="d" Loaded="Window_Loaded" WindowStyle="None" AllowsTransparency="True"
+        Title="MainWindow" Height="410" Width="480" WindowStartupLocation="CenterScreen"
+        Closed="Window_Closed">
+    <Window.Resources>
+
+        <Style x:Key="labelStyle">
+            <Setter Property="Control.FontWeight" Value="Bold"/>
+            <Setter Property="FrameworkElement.Width" Value="20"/>
+            <Setter Property="Control.HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FrameworkElement.Margin" Value="3,0,3,0"/>
+        </Style>
+
+        <Style x:Key="closeStyle" BasedOn="{StaticResource labelStyle}">
+            <Setter Property="Control.FontWeight" Value="Bold"/>
+            <Style.Triggers>
+                <Trigger  Property="UIElement.IsMouseOver" Value="true">
+                    <Setter Property="Control.Background" Value="#C5FF0000"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="minimizeStyle" BasedOn="{StaticResource labelStyle}">
+            <Style.Triggers>
+                <Trigger  Property="UIElement.IsMouseOver" Value="true">
+                    <Setter Property="Control.Background" Value="LightGreen"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid  Background="Azure" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.2*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Top" Grid.Column="2">
+            <Label  ToolTip="Minimize" Content="-" Style="{StaticResource minimizeStyle}"
+			MouseLeftButtonDown="Label_MouseLeftButtonDown"/>
+            <Label ToolTip="Close" Content="X" Style="{StaticResource closeStyle}" MouseLeftButtonDown="Label_MouseLeftButtonDown"
+				   Name="closeApp"/>
+        </StackPanel>
+        <Border Grid.ColumnSpan="3" Grid.RowSpan="5"
+             Margin="4,26,4.4,4.2" BorderThickness="2" BorderBrush="Black" CornerRadius="4">
+            <Border.Effect>
+                <DropShadowEffect Opacity="0.7" BlurRadius="8" Direction="316" />
+            </Border.Effect>
+            <Border.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF9CF6BA" Offset="0.008"/>
+                    <GradientStop Color="#FF62FF3A" Offset="0.87"/>
+                    <GradientStop Color="#FF00FF96" Offset="0.508"/>
+                </RadialGradientBrush>
+            </Border.Background>
+        </Border>
+        <StackPanel Grid.Row="1" Grid.RowSpan="3" HorizontalAlignment="Center" Margin="10">
+            <TextBlock Text="Reseller" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Path=PhoneNumber}" HorizontalAlignment="Center" Foreground="Green"/>
+            <TextBlock Text="Balance" HorizontalAlignment="Center" Margin="0,12,0,0" Cursor="Hand" MouseRightButtonUp="TextBlock_MouseUp" MouseLeftButtonDown="TextBlock_MouseLeftButtonUp"/>
+            <TextBlock Text="{Binding Path=Balance}" HorizontalAlignment="Center" Foreground="Green" />
+        </StackPanel>
+
+        <Label x:Name="todayLabel" HorizontalAlignment="Left" Content="Today" VerticalAlignment="Top" Grid.Row="2" Margin="10,70,0,0"/>
+        <Label x:Name="yestLabel" HorizontalAlignment="Left" Content="Today" VerticalAlignment="Top" Grid.Row="2" Margin="10,100,0,0"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Top"  HorizontalAlignment="Center" 
+                    Orientation="Horizontal" Margin="0,6">
+            <TextBlock Text="Users Count = "/>
+            <TextBlock Name="TBUsersCount" Text="0"/>
+        </StackPanel>
+
+        <TextBox Name="queryTextBox" TextChanged="queryTextBox_TextChanged" FontSize="15"
+                     Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="6,6,37,0" VerticalAlignment="Bottom"/>
+        <Button Name="buttonAddUser" Content="+" Padding="7,2" IsEnabled="False" Click="buttonAddUser_Click" HorizontalAlignment="Right"
+                    Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,13,0" VerticalAlignment="Bottom"/>
+
+        <Grid Name="gridPin"
+            Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" Height="100" Width="180" VerticalAlignment="Top" Margin="10" Visibility="Collapsed">
+            <TextBox Name="textBoxPin" VerticalAlignment="Top" Padding="10" Width="120" HorizontalContentAlignment="Center" FontSize="14"/>
+            <Button Name="buttonPinCanel" VerticalAlignment="Bottom" Content="Cancel" HorizontalAlignment="Left" Padding="12,6" Margin="20,0,0,10" Click="buttonPinCanel_Click"/>
+            <Button Name="buttonPinOk" VerticalAlignment="Bottom" Content="OK" HorizontalAlignment="Right" Padding="18,6" Margin="0,0,20,10" Click="buttonPinOk_Click"/>
+        </Grid>
+
+        <ListBox x:Name="listBox" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="6.2,49.4,13.4,0" Height="270" Visibility="Visible"
+                 HorizontalAlignment="Stretch"  SelectedValuePath="Name" VerticalAlignment="Top"  ItemsSource="{Binding Source={x:Static local:App.Users}}"
+				 HorizontalContentAlignment="Stretch" Padding="0" IsTabStop="False" SelectionChanged="listBox_SelectionChanged" Grid.RowSpan="2"
+                 >
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="IsTabStop" Value="False"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="LightBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Background="White">
+                        <Border Margin="2,2,7,2" BorderThickness="1" BorderBrush="SteelBlue" CornerRadius="4"
+								Background="{Binding Path=Background, RelativeSource={RelativeSource
+								Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" >
+                            <Border.Effect>
+                                <DropShadowEffect Opacity="0.4" BlurRadius="7"/>
+                            </Border.Effect>
+                        </Border>
+                        <Grid Margin="6,4,10,6">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Path=PhoneNumber}" FontSize="22" Grid.ColumnSpan="2"/>
+                            <TextBlock Text="{Binding Path=Password}" Grid.Column="0" Grid.Row="1" FontSize="10" Foreground="#FF0A23C3"/>
+                            <TextBlock Text="{Binding Path=Balance,StringFormat=0.00}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" 
+									   VerticalAlignment="Center" Cursor="Hand" MouseLeftButtonDown="balanceTextBlock_MouseLeftButtonUp"
+									   FontSize="10" x:Name="balanceTB" Tag="{Binding}"/>
+                            <TextBlock Text="R" Grid.Column="1" HorizontalAlignment="Right" Foreground="Red" Margin="4,1,8,1"
+                                       FontFamily="forte" FontSize="20" Name="logoRTB"/>
+                        </Grid>
+                    </Grid>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=Password}" Value="">
+                            <Setter TargetName="balanceTB" Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=ResellerRate}" Value="1500">
+                            <Setter TargetName="logoRTB" Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" Grid.RowSpan="2" Grid.Column="1" >
+            <TextBox x:Name="amountTextBox" HorizontalContentAlignment="Center" VerticalAlignment="Center"
+				 TextWrapping="Wrap" Text="5"  Width="120" FontSize="20" GotFocus="amountTextBox_GotFocus"
+                 PreviewKeyDown="amountTextBox_PreviewKeyDown" Padding="0,3"/>
+            <Label x:Name="priceLabel"   Width="80" Content="7500" VerticalAlignment="Center" Margin="2,0"
+			    FontSize="20" Foreground="Blue" HorizontalContentAlignment="Center">
+            </Label>
+
+            <Button x:Name="transferButton" Grid.Row="3"  Grid.Column="2"  Content="Send" HorizontalAlignment="Right" VerticalAlignment="Center"
+			 Width="75" Height="33" IsEnabled="False" IsTabStop="False" IsDefault="True" Click="transferButton_Click"/>
+        </StackPanel>
+        <TextBlock Name="TextError" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left" Text="No internet" Margin="18,0"
+                   FontSize="16" Visibility="Collapsed" Background="Red" Foreground="White"/>
+    </Grid>
+</Window>
